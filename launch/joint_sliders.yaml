@@ -1,0 +1,15 @@
+joint_states:
+    type: sensor_msgs/JointState
+    name: ['wheel','torso','neck']
+    wheel:
+        min: -pi
+        max: pi
+        to: position[0]
+    torso:
+        min: -pi/4
+        max: pi/4
+        to: position[1]
+    neck:
+        min: -pi/6
+        max: pi/6
+        to: position[2]
