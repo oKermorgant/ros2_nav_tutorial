@@ -7,7 +7,6 @@ def generate_launch_description():
     Run the given nodes in the robot's namespace
     '''
     
-
     sl = SimpleLauncher()
     
     with sl.group(ns='bb8'):

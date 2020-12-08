@@ -1,4 +1,0 @@
-uint8 CMD_VEL = 0
-uint8 CMD_VEL_NO_JOINTS = 1
-uint8 mode
----

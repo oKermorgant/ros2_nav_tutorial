@@ -14,15 +14,13 @@ def generate_launch_description():
     sl.declare_arg('use_nav', 'false', description = 'Whether to use the nav stack')
     sl.declare_arg('use_js_gui', 'false', description = 'Whether to use the joint states gui')    
     
-    robot = sl.arg('robot')
-    
+    robot = sl.arg('robot')    
     # extract robot type (bb / d)
     robot_type = sl.py_eval("''.join(c for c in '", robot, "' if not c.isdigit())")
-
     
     with sl.group(ns=robot):
-        
-        sl.node('ros2_nav_tutorial', 'robot', name='control', output='screen')
+                
+        sl.node('ros2_nav_tutorial', 'move_joints.py', output='screen', parameters = [{'mode': sl.arg('use_js_gui')}])
         
         with sl.group(if_arg='use_js_gui'):
             js_file = sl.find('ros2_nav_tutorial', 'joint_sliders.yaml')
