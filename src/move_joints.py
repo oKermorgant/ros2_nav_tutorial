@@ -5,7 +5,7 @@ from numpy import pi
 
 from sensor_msgs.msg import JointState
 from geometry_msgs.msg import Twist
-from simulation_2d.srv import Spawn
+from map_simulator.srv import Spawn
 from ros2_nav_tutorial.srv import JointMode
 
 
@@ -33,15 +33,17 @@ class MoveJointsNode(Node):
         manual = self.declare_parameter("mode", 'servo').get_parameter_value().string_value == 'manual'
         self.dt = self.declare_parameter("dt", 0.05).get_parameter_value().double_value
         
+        
+        
         self.mode = manual and JointMode.Request().MANUAL or self.mode_servo
         
-        self.spawn()
+        self.spawn(self.declare_parameter("static_tf", True).get_parameter_value().bool_value)
         
     def mode_callback(self, request, response):
         self.mode = request.mode
         return response
                 
-    def spawn(self):
+    def spawn(self, static_tf):
         
         robot = self.get_namespace().strip('/')
         
@@ -60,6 +62,7 @@ class MoveJointsNode(Node):
         
         req.radius = self.radius
         req.shape = req.SHAPE_CIRCLE
+        req.static_tf_odom = static_tf
         
         if robot in ('bb8', 'd0'):
             req.robot_color = [170,170,170]          

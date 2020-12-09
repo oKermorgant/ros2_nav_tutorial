@@ -20,7 +20,7 @@ def generate_launch_description():
     
     with sl.group(ns=robot):
                 
-        sl.node('ros2_nav_tutorial', 'move_joints.py', output='screen', parameters = [{'mode': sl.arg('use_js_gui')}])
+        sl.node('ros2_nav_tutorial', 'move_joints.py', output='screen', parameters = [{'mode': sl.arg('use_js_gui'), 'static_tf': not use_amcl}])
         
         with sl.group(if_arg='use_js_gui'):
             js_file = sl.find('ros2_nav_tutorial', 'joint_sliders.yaml')
@@ -28,11 +28,7 @@ def generate_launch_description():
         
         # get robot type to generate description
         sl.robot_state_publisher('ros2_nav_tutorial', sl.name_join(robot_type, '.xacro'), 'urdf', xacro_args={'name': robot})
-        
-        if not use_amcl:
-            # replace AMCL with static (perfect) transform
-            sl.node('tf2_ros', 'static_transform_publisher', arguments=['0','0','0','0','0','0','map',sl.name_join(robot,'/odom')])
-            
+
         with sl.group(unless_arg='use_nav'):
             cmd_file = sl.find('ros2_nav_tutorial', 'cmd_sliders.yaml')
             sl.node('slider_publisher', 'slider_publisher', name='cmd_vel_manual', arguments=[cmd_file])
@@ -82,7 +78,9 @@ def generate_launch_description():
 
             sl.node('nav2_lifecycle_manager','lifecycle_manager',name='lifecycle_manager',
             output='screen',
-            parameters=[{'autostart': True},
-                        {'node_names': lifecycle_nodes}])
+            parameters=[{'autostart': True,
+                        'node_names': lifecycle_nodes}])
+            #parameters=[{'autostart': True},
+                        #{'node_names': lifecycle_nodes}])
                     
     return sl.launch_description()
